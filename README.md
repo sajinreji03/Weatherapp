@@ -7,4 +7,4 @@ Currently, two official plugins are available:
 - [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
 - [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-![image alt](https://github.com/sajinreji03/Weatherapp/blob/2c9fbd3e607984a3f9468cfba0a0e35b6e18ebe5/Screenshot%202025-02-19%20121015.png)
+![image alt](https://github.com/sajinreji03/Weatherapp/blob/main/Screenshot%202025-02-19%20121935.png?raw=true)
