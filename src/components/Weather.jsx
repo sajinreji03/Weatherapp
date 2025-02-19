@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 import './Weather.css'
 import search_icon from '../assets/search.png'
 import clear_icon from '../assets/clear.png'
@@ -11,8 +11,7 @@ import humidity_icon from '../assets/humidity.png'
 
 const Weather = () => {
 
-    const inputref = useRef()
-
+    const inputRef = useRef();
     const [weatherData, setWeatherData] = useState(false);
 
     const allIcons = {
@@ -32,8 +31,8 @@ const Weather = () => {
         "13n":snow_icon,
     }
 
-    const search = async (city) => {
-        if (city === "") {
+    const search = useCallback(async (city) => {
+        if (city.trim() === "") {
             alert("Enter the city name");
             return;
         }
@@ -55,46 +54,61 @@ const Weather = () => {
                 temperature: Math.floor(data.main.temp),
                 location: data.name,
                 icon: icon
-            })
+            });
+
+            if (inputRef.current) {
+                inputRef.current.value = "";
+            }
+
         } catch {
             setWeatherData(false);
             console.error("Error in fetching weather data");
         }
-    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         search("Alappuzha");
-    }, [])
+    }, [search]);
+
+    // Handle search on Enter key press
+    const handleKeyPress = (event) => {
+        if (event.key === "Enter") {
+            search(inputRef.current.value);
+        }
+    };
 
     return (
         <div className='weather'>
             <div className="search-bar">
-                <input ref={inputref} type="text" placeholder='Search' />
-                <img src={search_icon} alt="" onClick={() => search(inputref.current.value)} />
+                <input ref={inputRef} type="text" placeholder='Search city...' onKeyPress={handleKeyPress}  />
+                <img src={search_icon} alt="search" onClick={() => search(inputRef.current.value)} />
             </div>
-            {weatherData ? <>
-                <img src={weatherData.icon} alt="" className='weather-icon' />
-                <p className='temperature'>{weatherData.temperature} °C</p>
-                <p className='location'>{weatherData.location}</p>
-                <div className="weather-data">
-                    <div className="col">
-                        <img src={humidity_icon} alt="" />
-                        <div>
-                            <p>{weatherData.humidity} %</p>
-                            <span>Humidity</span>
+            {weatherData ? (
+                <>
+                    <img src={weatherData.icon} alt="" className='weather-icon' />
+                    <p className='temperature'>{weatherData.temperature} °C</p>
+                    <p className='location'>{weatherData.location}</p>
+                    <div className="weather-data">
+                        <div className="col">
+                            <img src={humidity_icon} alt="" />
+                            <div>
+                                <p>{weatherData.humidity} %</p>
+                                <span>Humidity</span>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <img src={wind_icon} alt="" />
+                            <div>
+                                <p>{weatherData.windSpeed} km/hr</p>
+                                <span>Wind Speed</span>
+                            </div>
                         </div>
                     </div>
-                    <div className="col">
-                        <img src={wind_icon} alt="" />
-                        <div>
-                            <p>{weatherData.windSpeed}km/hr</p>
-                            <span>Wind Speed</span>
-                        </div>
-                    </div>
-                </div>
-            </> : <></>}
+                </>
+            ) : null}
         </div>
-    )
-}
+    );
+};
 
-export default Weather
+export default Weather;
